@@ -1,13 +1,18 @@
 var express = require('express');
 var router = express.Router();
+var hlresponse = require('../public/javascripts/response');
 
 
 router.get('/', function(req, res, next) {
-    res.end('index de clients');
+    status = 'OK'
+    payload = '[{clients1},{client2}]'
+    res.end(hlresponse(status, payload));
 });
 
 router.get('/:idClient', function(req, res, next) {
-    res.end('view de client: ' + req.params.idClient);
+    status = 'ERROR'
+    payload = ''
+    res.end(hlresponse(status, payload));
 });
 
 router.post('/', function(req, res, next) {
