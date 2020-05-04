@@ -62,3 +62,56 @@ DELETE localhost:3000/clients/:idClient
 ```
 curl -X DELETE localhost:3000/clients/:idClient
 ```
+
+
+## Contract
+
+* View contracts
+
+```
+GET localhost:3000/clients/:idClient/contracts
+```
+
+```
+curl -X GET localhost:3000/clients/:idClient/contracts
+```
+
+* View contract
+
+```
+GET localhost:3000/clients/:idClient/contracts/:idContract
+```
+
+```
+curl -X GET localhost:3000/clients/:idClient/contracts/:idContract
+```
+
+
+* New contract
+
+```
+POST localhost:3000/clients/:idClient/contracts
+```
+```
+curl -X POST -d"name:value" localhost:3000/clients/:idClient/contracts
+```
+
+* Update contract
+
+```
+PUT localhost:3000/clients/:idClient/contracts/:idContract
+```
+
+```
+curl -X PUT -d"name:value" localhost:3000/clients/:idClient/contracts/:idContract
+```
+
+* Delete contract
+
+```
+DELETE localhost:3000/clients/:idClient/contracts/:idContract
+```
+
+```
+curl -X DELETE localhost:3000/clients/:idClient/contracts/:idContract
+```
