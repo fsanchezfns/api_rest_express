@@ -1,7 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var redis = require('redis')
+var redisClient = require('../db');
 var hlresponse = require('../public/javascripts/response');
 
+const statusOK = 'OK';
+const statusError = 'ERROR';
 
 router.get('/', function(req, res, next) {
     status = 'OK'
@@ -10,25 +14,58 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:idClient', function(req, res, next) {
-    status = 'ERROR'
-    payload = ''
-    res.end(hlresponse(status, payload));
+    key = `client#${req.params.idClient}`
+
+    redisClient.get(key, (err, result) => {
+        if (result) {
+            res.status(200)
+            res.end(hlresponse(statusOK, result));
+
+        } else {
+            res.status(400)
+            res.end(hlresponse(statusError, err));
+
+        }
+    });
 });
 
 router.post('/', function(req, res, next) {
-    body = JSON.stringify(req.body);
-    res.end('new client body: ' + body);
+    key = `client#${req.body['id']}`;
+    value = JSON.stringify(req.body);
+
+    redisClient.set(key, value, (err, result) => {
+        if (result) {
+            res.status(200);
+            res.end(hlresponse(statusOK, 'create user'));
+
+        } else {
+            res.status(400)
+            res.end(hlresponse(statusError, err));
+        }
+    });
+
 });
 
 
 router.put('/:idClient', function(req, res, next) {
     body = JSON.stringify(req.body);
     res.end('update de client: ' + req.params.idClient + ' body: ' + body);
-
 });
 
 router.delete('/:idClient', function(req, res, next) {
-    res.end('delete de client: ' + req.params.idClient);
+    idClient = req.params.idClient;
+    key = `client#${idClient}`;
+
+    redisClient.del(key, (err, result) => {
+        if (result) {
+            res.status(200);
+            res.end(hlresponse(statusOK, `delete user ${idClient}`))
+
+        } else {
+            res.status(400);
+            res.end(hlresponse(statusError, err));
+        }
+    });
 
 });
 

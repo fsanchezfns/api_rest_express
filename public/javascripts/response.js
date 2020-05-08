@@ -7,7 +7,7 @@ function hlresponse(status, payload) {
     if (status == "OK") {
         responseAux.response = payload;
     } else {
-        responseAux.response = "ERROR CODE"; //manejo de errores
+        responseAux.response = payload; //manejo de errores
 
     }
 
