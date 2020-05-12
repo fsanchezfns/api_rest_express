@@ -3,6 +3,7 @@ var router = express.Router();
 var redis = require('redis')
 var redisClient = require('../db');
 var hlresponse = require('../public/javascripts/response');
+const dbClients = require('../public/javascripts/dbClients')
 
 const statusOK = 'OK';
 const statusError = 'ERROR';
@@ -30,13 +31,16 @@ router.get('/:idClient', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-    key = `client#${req.body['id']}`;
+
+    clientId = dbClients.getLastClientId() + 1;
+    key = `client#${clientId}`;
     value = JSON.stringify(req.body);
 
     redisClient.set(key, value, (err, result) => {
         if (result) {
+            dbClients.setClientId(clientId);
             res.status(200);
-            res.end(hlresponse(statusOK, 'create user'));
+            res.end(hlresponse(statusOK, `create user${ key }`));
 
         } else {
             res.status(400)
