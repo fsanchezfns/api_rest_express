@@ -30,9 +30,10 @@ router.get('/:idClient', function(req, res, next) {
     });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', async function(req, res, next) {
 
-    clientId = dbClients.getLastClientId() + 1;
+    clientId = await dbClients.getLastClientId() + 1;
+    console.log(clientId)
     key = `client#${clientId}`;
     value = JSON.stringify(req.body);
 
