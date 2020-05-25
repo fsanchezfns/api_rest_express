@@ -13,44 +13,35 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:idClient', async function(req, res, next) {
-    clientId = req.params.idClient
-    result = await Client.getClient(clientId)
-    res.status(200)
-    res.end(hlresponse(statusOK, result));
-
-    /*redisClient.get(key, (err, result) => {
-        if (result) {
-            res.status(200)
-            res.end(hlresponse(statusOK, result));
-
-        } else {
-            res.status(400)
-            res.end(hlresponse(statusError, err));
-
-        }
-    });*/
-
+    try {
+        clientId = req.params.idClient
+        result = await Client.getClient(clientId)
+        res.status(200)
+        res.end(hlresponse(statusOK, result));
+        console.log(result)
+    } catch (e) {
+        console.log(e);
+        res.status(400)
+        err = 'no existe el cliente'
+        res.end(hlresponse(statusError, err));
+    }
 });
 
 router.post('/', async function(req, res, next) {
-    clientId = await Client.getLastClientId() + 1;
-    value = JSON.stringify(req.body);
-    console.log(value)
-    await Client.saveClient(clientId, value)
+    try {
+        clientId = await Client.getLastClientId() + 1;
+        value = JSON.stringify(req.body);
+        console.log(value)
+        await Client.saveClient(clientId, value)
 
-    /*
-        redisClient.set(key, value, (err, result) => {
-            if (result) {
-                dbClients.setClientId(clientId);
-                res.status(200);
-                res.end(hlresponse(statusOK, `create user${ key }`));
-
-            } else {
-                res.status(400)
-                res.end(hlresponse(statusError, err));
-            }
-        });
-    */
+        msg = `client#${clientId} creado`;
+        res.status(200);
+        res.end(hlresponse(statusOK, msg));
+    } catch {
+        res.status(400);
+        err = 'no existe el cliente';
+        res.end(hlresponse(statusError, err));
+    }
 });
 
 
