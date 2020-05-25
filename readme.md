@@ -8,6 +8,9 @@
 * install dependencies:
      > npm install
 
+* redis run:
+     > docker run --name paredis -p 6379:6379 redis
+
 * run the app:
      > SET DEBUG=api-rest-express:* & npm start
 
