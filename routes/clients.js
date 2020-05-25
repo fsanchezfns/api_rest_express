@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var Client = require('../model/Client')
-var hlresponse = require('../public/javascripts/response');
+var Client = require('../model/Client');
+//var hlresponse = require('../public/javascripts/response');
+var hlresponse = require('../helper/hlResponse');
 
 const statusOK = 'OK';
 const statusError = 'ERROR';
@@ -13,58 +14,41 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:idClient', async function(req, res, next) {
-    try {
-        clientId = req.params.idClient
-        result = await Client.getClient(clientId)
-        res.status(200)
-        res.end(hlresponse(statusOK, result));
-        console.log(result)
-    } catch (e) {
-        console.log(e);
-        res.status(400)
-        err = 'no existe el cliente'
-        res.end(hlresponse(statusError, err));
-    }
+    clientId = req.params.idClient;
+    result = await Client.getClient(clientId);
+
+    resAux = hlresponse.response(result);
+    res.status(resAux.status)
+    res.end(resAux.payload);
 });
 
 router.post('/', async function(req, res, next) {
-    try {
-        clientId = await Client.getLastClientId() + 1;
-        value = JSON.stringify(req.body);
-        console.log(value)
-        await Client.saveClient(clientId, value)
+    value = JSON.stringify(req.body);
+    result = await Client.newClient(value);
 
-        msg = `client#${clientId} creado`;
-        res.status(200);
-        res.end(hlresponse(statusOK, msg));
-    } catch {
-        res.status(400);
-        err = 'no existe el cliente';
-        res.end(hlresponse(statusError, err));
-    }
+    resAux = hlresponse.response(result);
+    res.status(resAux.status);
+    res.end(resAux.payload);
 });
 
 
-router.put('/:idClient', function(req, res, next) {
-    body = JSON.stringify(req.body);
-    res.end('update de client: ' + req.params.idClient + ' body: ' + body);
+router.put('/:idClient', async function(req, res, next) {
+    clientId = req.params.idClient;
+    value = JSON.stringify(req.body);
+    result = await Client.updateClient(clientId, value);
+
+    resAux = hlresponse.response(result);
+    res.status(resAux.status);
+    res.end(resAux.payload);
 });
 
-router.delete('/:idClient', function(req, res, next) {
-    idClient = req.params.idClient;
-    key = `client#${idClient}`;
+router.delete('/:idClient', async function(req, res, next) {
+    clientId = req.params.idClient;
+    result = await Client.deleteClient(clientId);
 
-    redisClient.del(key, (err, result) => {
-        if (result) {
-            res.status(200);
-            res.end(hlresponse(statusOK, `delete user ${idClient}`))
-
-        } else {
-            res.status(400);
-            res.end(hlresponse(statusError, err));
-        }
-    });
-
+    resAux = hlresponse.response(result);
+    res.status(resAux.status);
+    res.end(resAux.payload);
 });
 
 

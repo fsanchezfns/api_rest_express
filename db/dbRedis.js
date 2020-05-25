@@ -17,7 +17,6 @@ function save(key, value) {
 function get(key) {
     return new Promise((resolve, reject) => {
         redisClient.get(key, (err, result) => {
-
             if (result) {
                 resolve(result);
             } else {
@@ -56,4 +55,19 @@ function setLastId(key, id) {
     });
 }
 
-module.exports = { save, get, getLastId, setLastId }
+
+
+function clear(key) {
+    return new Promise((resolve, reject) => {
+        redisClient.del(key, (err, result) => {
+            if (result) {
+                resolve(result);
+            } else {
+                reject(err);
+            }
+        });
+    });
+
+}
+
+module.exports = { save, get, getLastId, setLastId, clear }
