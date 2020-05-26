@@ -1,16 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var Client = require('../model/Client');
-//var hlresponse = require('../public/javascripts/response');
 var hlresponse = require('../helper/hlResponse');
 
-const statusOK = 'OK';
-const statusError = 'ERROR';
 
-router.get('/', function(req, res, next) {
-    status = 'OK'
-    payload = '[{clients1},{client2}]'
-    res.end(hlresponse(status, payload));
+router.get('/', async function(req, res, next) {
+    result = await Client.getAllClient();
+
+    resAux = hlresponse.response(result);
+    res.status(resAux.status)
+    res.end(resAux.payload);
 });
 
 router.get('/:idClient', async function(req, res, next) {

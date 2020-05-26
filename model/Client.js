@@ -1,12 +1,36 @@
 dbRedis = require('../db/dbRedis')
 
+
+async function getAllClient() {
+    var result = new Object();
+    try {
+        keys = await dbRedis.getKey("client#[1-9]*")
+        dataList = new Array();
+
+        for (var item in keys) {
+            data = await dbRedis.get(keys[item]);
+            dataList.push(data);
+        }
+
+        result.flag = 'S';
+        result.data = dataList;
+        return result;
+    } catch {
+        result.flag = 'N';
+        result.error = 'En este momento no se puede realizar la request';
+        return result;
+    }
+}
+
+
 async function newClient(value) {
     try {
         var result = new Object();
-        id = await dbRedis.getLastId('clientId') + 1;
+        idAux = await dbRedis.getLastId('clientId');
+        id = parseInt(idAux) + 1;
         key = `client#${id}`;
-        await dbRedis.save(key, value);
-        await dbRedis.setLastId('clientId', id);
+        await dbRedis.set(key, value);
+        await dbRedis.set('clientId', id);
 
         result.flag = 'S';
         result.data = `New ${key}`;
@@ -14,7 +38,7 @@ async function newClient(value) {
 
     } catch {
         result.flag = 'N';
-        result.error = 'En este momento no se puede realizar la operación';
+        result.error = 'En este momento no se puede realizar la creacion';
         return result;
     }
 };
@@ -40,12 +64,13 @@ async function updateClient(id, value) {
     try {
         var result = new Object();
         resultAux = await getClient(id)
-            //compruebo existencia
+
+        //compruebo existencia
         if (resultAux.flag == 'N') {
             return resultAux;
         } else {
             key = `client#${id}`;
-            await dbRedis.save(key, value);
+            await dbRedis.set(key, value);
 
             result.flag = 'S';
             result.data = `update ${key}`;
@@ -81,4 +106,4 @@ async function deleteClient(id) {
 }
 
 
-module.exports = { getClient, newClient, updateClient, deleteClient }
+module.exports = { getAllClient, getClient, newClient, updateClient, deleteClient }
