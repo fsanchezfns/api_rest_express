@@ -52,26 +52,56 @@ router.delete('/:idClient', async function(req, res, next) {
 
 
 //contracts
-router.get('/:idClient/contracts', function(req, res, next) {
-    res.end('view de contracts del client: ' + req.params.idClient);
+router.get('/:idClient/contracts', async function(req, res, next) {
+    clientId = req.params.idClient;
+    result = await Client.getAllContract(clientId);
+
+    resAux = hlresponse.response(result);
+    res.status(resAux.status);
+    res.end(resAux.payload);
 });
 
-router.get('/:idClient/contracts/:idContract', function(req, res, next) {
-    res.end('view del contract ' + req.params.idContract + ' del client: ' + req.params.idClient);
+
+router.get('/:idClient/contracts/:idContract', async function(req, res, next) {
+    clientId = req.params.idClient;
+    contId = req.params.idContract;
+    result = await Client.getContract(clientId, contId);
+
+    resAux = hlresponse.response(result);
+    res.status(resAux.status);
+    res.end(resAux.payload);
 });
 
-router.post('/:idClient/contracts', function(req, res, next) {
-    body = JSON.stringify(req.body);
-    res.end('new de contracts del client: ' + req.params.idClient + ' body: ' + body);
+router.post('/:idClient/contracts', async function(req, res, next) {
+    clientId = req.params.idClient;
+    value = JSON.stringify(req.body);
+    result = await Client.newContract(clientId, value);
+
+    resAux = hlresponse.response(result);
+    res.status(resAux.status);
+    res.end(resAux.payload);
 });
 
-router.put('/:idClient/contracts/:idContract', function(req, res, next) {
-    body = JSON.stringify(req.body);
-    res.end('update del contract ' + req.params.idContract + ' del client: ' + req.params.idClient + ' body: ' + body);
+router.put('/:idClient/contracts/:idContract', async function(req, res, next) {
+    clientId = req.params.idClient;
+    contId = req.params.idContract;
+    value = JSON.stringify(req.body);
+    result = await Client.updateContract(clientId, contId, value);
+
+    resAux = hlresponse.response(result);
+    res.status(resAux.status);
+    res.end(resAux.payload);
 });
 
-router.delete('/:idClient/contracts/:idContract', function(req, res, next) {
-    res.end('delete del contract ' + req.params.idContract + ' del client: ' + req.params.idClient);
+router.delete('/:idClient/contracts/:idContract', async function(req, res, next) {
+    clientId = req.params.idClient;
+    contId = req.params.idContract;
+    value = JSON.stringify(req.body);
+    result = await Client.deleteContract(clientId, contId);
+
+    resAux = hlresponse.response(result);
+    res.status(resAux.status);
+    res.end(resAux.payload);
 });
 
 
